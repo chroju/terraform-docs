@@ -17,24 +17,24 @@ module "foo" {
 
 ## Inputs
 
-| Name | Description | Type | Default |
-|------|-------------|:----:|:-----:|
-| input\_with\_underscores | A variable with underscores. | string | n/a |
-| list-2 | It's list number two. | list | n/a |
-| map-2 | It's map number two. | map | n/a |
-| string-2 | It's string number two. | string | n/a |
-| unquoted |  | string | n/a |
-| list-1 | It's list number one. | list | `<list>` |
-| list-3 |  | list | `<list>` |
-| map-1 | It's map number one. | map | `<map>` |
-| map-3 |  | map | `<map>` |
-| string-1 | It's string number one. | string | `"bar"` |
-| string-3 |  | string | `""` |
+|           Name           |         Description          |  Type  | Default  |
+|--------------------------|------------------------------|--------|----------|
+| input\_with\_underscores | A variable with underscores. | string | n/a      |
+| list-2                   | It's list number two.        | list   | n/a      |
+| map-2                    | It's map number two.         | map    | n/a      |
+| string-2                 | It's string number two.      | string | n/a      |
+| unquoted                 |                              | string | n/a      |
+| list-1                   | It's list number one.        | list   | `<list>` |
+| list-3                   |                              | list   | `<list>` |
+| map-1                    | It's map number one.         | map    | `<map>`  |
+| map-3                    |                              | map    | `<map>`  |
+| string-1                 | It's string number one.      | string | `"bar"`  |
+| string-3                 |                              | string | `""`     |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
+|   Name   |       Description       |
+|----------|-------------------------|
 | output-1 | It's output number one. |
 | output-2 | It's output number two. |
-| unquoted | It's unquoted output. |
+| unquoted | It's unquoted output.   |

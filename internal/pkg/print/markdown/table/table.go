@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/olekukonko/tablewriter"
 	"github.com/segmentio/terraform-docs/internal/pkg/doc"
 	"github.com/segmentio/terraform-docs/internal/pkg/print"
 	"github.com/segmentio/terraform-docs/internal/pkg/print/markdown"
@@ -62,36 +63,34 @@ func printComment(buffer *bytes.Buffer, comment string, settings settings.Settin
 
 func printInputs(buffer *bytes.Buffer, inputs []doc.Input, settings settings.Settings) {
 	buffer.WriteString("## Inputs\n\n")
-	buffer.WriteString("| Name | Description | Type | Default |")
 
+	table := tablewriter.NewWriter(buffer)
+	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetAutoFormatHeaders(false)
+	table.SetCenterSeparator("|")
+
+	header := []string{"Name", "Description", "Type", "Default"}
 	if settings.Has(print.WithRequired) {
-		buffer.WriteString(" Required |\n")
-	} else {
-		buffer.WriteString("\n")
+		header = append(header, "Required")
 	}
-
-	buffer.WriteString("|------|-------------|:----:|:-----:|")
-
-	if settings.Has(print.WithRequired) {
-		buffer.WriteString(":-----:|\n")
-	} else {
-		buffer.WriteString("\n")
-	}
+	table.SetHeader(header)
 
 	for _, input := range inputs {
-		buffer.WriteString(
-			fmt.Sprintf("| %s | %s | %s | %s |",
-				strings.Replace(input.Name, "_", "\\_", -1),
-				markdown.ConvertMultiLineText(input.Description),
-				input.Type,
-				getInputDefaultValue(&input, settings)))
+		raw := []string{
+			strings.Replace(input.Name, "_", "\\_", -1),
+			markdown.ConvertMultiLineText(input.Description),
+			input.Type,
+			getInputDefaultValue(&input, settings),
+		}
 
 		if settings.Has(print.WithRequired) {
-			buffer.WriteString(fmt.Sprintf(" %v |\n", printIsInputRequired(&input)))
-		} else {
-			buffer.WriteString("\n")
+			raw = append(raw, printIsInputRequired(&input))
 		}
+
+		table.Append(raw)
 	}
+
+	table.Render()
 }
 
 func printIsInputRequired(input *doc.Input) string {
@@ -104,13 +103,19 @@ func printIsInputRequired(input *doc.Input) string {
 
 func printOutputs(buffer *bytes.Buffer, outputs []doc.Output, settings settings.Settings) {
 	buffer.WriteString("## Outputs\n\n")
-	buffer.WriteString("| Name | Description |\n")
-	buffer.WriteString("|------|-------------|\n")
+
+	table := tablewriter.NewWriter(buffer)
+	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetAutoFormatHeaders(false)
+	table.SetCenterSeparator("|")
+	table.SetHeader([]string{"Name", "Description"})
 
 	for _, output := range outputs {
-		buffer.WriteString(
-			fmt.Sprintf("| %s | %s |\n",
-				strings.Replace(output.Name, "_", "\\_", -1),
-				markdown.ConvertMultiLineText(output.Description)))
+		table.Append([]string{
+			strings.Replace(output.Name, "_", "\\_", -1),
+			markdown.ConvertMultiLineText(output.Description),
+		})
 	}
+
+	table.Render()
 }
